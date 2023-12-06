@@ -1,11 +1,9 @@
-
-#此程序主要为登陆深信服官网签到并领取S豆
+#此程序主要为登陆深信服官网签到并领取S平邑
 #定位网页元素可以通过chrome 右键检查，复制完整xpath
 #linux下需要先安装好firefox
 #yum install firefox
 #同时需要下载geckodriver   下载地址 https://github.com/mozilla/geckodriver/releases
 #geckodriver需要放在/usr/bin/ 下
-
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -23,8 +21,8 @@ def print_with_timestamp(text):
 
 def login_and_claim_rewards():
     options = Options()
-    options.headless = True
     options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/95.0")
+    options.add_argument("--headless")
     options.add_argument("--width=0")
     options.add_argument("--height=0")
     driver = webdriver.Firefox(options=options)
@@ -53,7 +51,7 @@ def login_and_claim_rewards():
         sigin_button.click()
 
         # 输入用户名和密码
-        print_with_timestamp("输入用户名密码")
+        print_with_timestamp(" ")
         username_input = driver.find_element(By.XPATH,"/html/body/div[11]/div/div/root/div[1]/div/form/div[1]/input[2]")
         password_input = driver.find_element(By.XPATH,"/html/body/div[11]/div/div/root/div[1]/div/form/div[2]/input")
         username_input.send_keys("admin")
@@ -73,15 +71,21 @@ def login_and_claim_rewards():
         except TimeoutException:
             print("已领取每日福利或领取错误")
 
-        print_with_timestamp("点击每日签到")
-        QD_button = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[6]/div/div[2]/div[2]/a/span[1]")))
-        QD_button.click()
-        time.sleep(5)
+        try:            
+            QD_button = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[5]/div/div[2]/div[2]/a/span[1]")))
+            QD_button.click()
+            print_with_timestamp("点击每日签到")
+            time.sleep(5)
+        except TimeoutException:
+            print("每日签到错误")
 
-        print_with_timestamp("点击去抽奖")
-        QCJ_button = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[11]/div/div/div[2]/div[2]/div[1]/div[1]/p[1]/a")))#
-        QCJ_button.click()
-        time.sleep(5)
+        try: 
+            print_with_timestamp("点击去抽奖")
+            QCJ_button = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[10]/div/div/div[2]/div[2]/div[1]/div[1]/p[1]/a")))#
+            QCJ_button.click()
+            time.sleep(5)
+        except TimeoutException:
+            print("点击去抽奖错误")
 
         #获取所有窗口的句柄，并切换到新窗口
         windows = driver.window_handles
@@ -89,11 +93,17 @@ def login_and_claim_rewards():
             if window != main_window:
                 driver.switch_to.window(window)
                 break
-
-        print_with_timestamp("点击抽奖")
-        CJ_button = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[5]/div[2]/div[1]/div/div/div[1]")))#
-        CJ_button.click()
+        
         time.sleep(5)
+        
+        try: 
+            print_with_timestamp("点击抽奖")
+            CJ_button = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[4]/div[2]/div[1]/div/div/div[1]")))#
+            CJ_button.click()
+            time.sleep(5)
+        except TimeoutException:
+            print("点击抽奖错误")
+
 
         rewawrd_s_dou = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[10]/div/div/div/h3/span")))
         text1 = rewawrd_s_dou.text
@@ -107,6 +117,11 @@ def login_and_claim_rewards():
         print_with_timestamp(text)
 
         time.sleep(10)
+
+    except TimeoutException:
+        print_with_timestamp("程序超时")  
+    except KeyboardInterrupt:  
+        print_with_timestamp("手动中断程序运行")
     finally:
         # 关闭浏览器
         print_with_timestamp("关闭浏览器")
@@ -115,4 +130,3 @@ def login_and_claim_rewards():
 
 if __name__ == "__main__":
     login_and_claim_rewards()
-
