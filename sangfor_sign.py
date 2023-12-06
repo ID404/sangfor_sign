@@ -1,4 +1,4 @@
-#此程序主要为登陆深信服官网签到并领取S平邑
+#此程序主要为登陆深信服官网签到并领取S豆
 #定位网页元素可以通过chrome 右键检查，复制完整xpath
 #linux下需要先安装好firefox
 #yum install firefox
@@ -23,8 +23,8 @@ def login_and_claim_rewards():
     options = Options()
     options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/95.0")
     options.add_argument("--headless")
-    options.add_argument("--width=0")
-    options.add_argument("--height=0")
+    #options.add_argument("--width=0")
+    #options.add_argument("--height=0")
     driver = webdriver.Firefox(options=options)
     wait = WebDriverWait(driver, 10)
     main_window = driver.current_window_handle
@@ -69,7 +69,7 @@ def login_and_claim_rewards():
             FL_button.click()
             time.sleep(10)
         except TimeoutException:
-            print("已领取每日福利或领取错误")
+            print_with_timestamp("已领取每日福利或领取超时")
 
         try:            
             QD_button = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[5]/div/div[2]/div[2]/a/span[1]")))
@@ -77,7 +77,7 @@ def login_and_claim_rewards():
             print_with_timestamp("点击每日签到")
             time.sleep(5)
         except TimeoutException:
-            print("每日签到错误")
+            print_with_timestamp("每日签到超时")
 
         try: 
             print_with_timestamp("点击去抽奖")
@@ -85,7 +85,7 @@ def login_and_claim_rewards():
             QCJ_button.click()
             time.sleep(5)
         except TimeoutException:
-            print("点击去抽奖错误")
+            print_with_timestamp("点击去抽奖超时")
 
         #获取所有窗口的句柄，并切换到新窗口
         windows = driver.window_handles
@@ -102,7 +102,7 @@ def login_and_claim_rewards():
             CJ_button.click()
             time.sleep(5)
         except TimeoutException:
-            print("点击抽奖错误")
+            print_with_timestamp("点击抽奖超时")
 
 
         rewawrd_s_dou = wait.until(EC.presence_of_element_located((By.XPATH,"/html/body/div[10]/div/div/div/h3/span")))
@@ -119,8 +119,9 @@ def login_and_claim_rewards():
         time.sleep(10)
 
     except TimeoutException:
-        print_with_timestamp("程序超时")  
+        print_with_timestamp("程序运行超时")  
     except KeyboardInterrupt:  
+        print_with_timestamp(" ")
         print_with_timestamp("手动中断程序运行")
     finally:
         # 关闭浏览器
