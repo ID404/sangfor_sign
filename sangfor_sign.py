@@ -1,4 +1,4 @@
-#此程序主要为登陆深信服官网签到并领取S豆
+#此程序主要为签到并领取S豆
 #定位网页元素可以通过chrome 右键检查，复制完整xpath
 #linux下需要先安装好firefox
 #yum install firefox
