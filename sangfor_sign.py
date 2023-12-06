@@ -23,8 +23,6 @@ def login_and_claim_rewards():
     options = Options()
     options.set_preference("general.useragent.override", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Firefox/95.0")
     options.add_argument("--headless")
-    #options.add_argument("--width=0")
-    #options.add_argument("--height=0")
     driver = webdriver.Firefox(options=options)
     wait = WebDriverWait(driver, 10)
     main_window = driver.current_window_handle
